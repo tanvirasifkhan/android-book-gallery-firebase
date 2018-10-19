@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "6546621501",
+    "firebase_url": "https://book-gallery-with-firebase.firebaseio.com",
+    "project_id": "book-gallery-with-firebase",
+    "storage_bucket": "book-gallery-with-firebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6546621501:android:a6ec13e2e971293b",
+        "android_client_info": {
+          "package_name": "com.example.asifkhan.bookgalleryfirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "6546621501-qfus3hpm461btt31b3l16bdc6uh2dies.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHIXAihTlTwHydZ1BWGIqCqmBQwLOXJP8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
