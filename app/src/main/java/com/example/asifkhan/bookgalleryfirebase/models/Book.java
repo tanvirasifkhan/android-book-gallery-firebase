@@ -1,18 +1,19 @@
 package com.example.asifkhan.bookgalleryfirebase.models;
 
 public class Book {
-    private String id,title,author,rating,coverPhotoURL;
+    private String id,title,author,coverPhotoURL;
+    private float rating;
 
     public Book(){}
 
-    public Book(String title, String author, String rating, String coverPhotoURL) {
+    public Book(String title, String author, float rating, String coverPhotoURL) {
         this.title = title;
         this.author = author;
         this.rating = rating;
         this.coverPhotoURL = coverPhotoURL;
     }
 
-    public Book(String id, String title, String author, String rating, String coverPhotoURL) {
+    public Book(String id, String title, String author, float rating, String coverPhotoURL) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -44,11 +45,11 @@ public class Book {
         this.author = author;
     }
 
-    public String getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
