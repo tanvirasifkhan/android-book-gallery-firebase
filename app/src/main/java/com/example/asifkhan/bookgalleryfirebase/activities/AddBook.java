@@ -26,16 +26,6 @@ public class AddBook extends AppCompatActivity implements View.OnClickListener {
     private Uri coverPhotoURL;
     private BookDatabaseHelper bookDatabaseHelper;
 
-
-    private final static String TITLE_EMPTY_MESSAGE="Title is required !";
-    private final static String AUTHOR_EMPTY_MESSAGE="Author is required !";
-    private final static String RATING_ZERO_MESSAGE="Give some rating !";
-    private final static String IMAGE_URL_NULL_MESSAGE="Choose an image !";
-    private final static String BOOK_ADD_SUCCESS_MSG="Book added successfully !";
-
-
-    private static final int COVER_PHOTO_REQUEST_CODE=1000;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,13 +57,13 @@ public class AddBook extends AppCompatActivity implements View.OnClickListener {
     private void captureCoverPhoto() {
         Intent intent=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
-        startActivityForResult(intent,COVER_PHOTO_REQUEST_CODE);
+        startActivityForResult(intent,Config.COVER_PHOTO_REQUEST_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==COVER_PHOTO_REQUEST_CODE && resultCode==RESULT_OK && data!=null){
+        if(requestCode==Config.COVER_PHOTO_REQUEST_CODE && resultCode==RESULT_OK && data!=null){
             coverPhotoURL=data.getData();
             coverPhotoField.setImageURI(coverPhotoURL);
         }
@@ -83,32 +73,32 @@ public class AddBook extends AppCompatActivity implements View.OnClickListener {
     private void newBook() {
         String getTitle=titleField.getText().toString();
         String getAuthor=authorField.getText().toString();
-        String getRating=String.valueOf(ratingField.getRating());
+        float getRating=ratingField.getRating();
         boolean isTitleEmpty=titleField.getText().toString().isEmpty();
         boolean isAuthorEmpty=authorField.getText().toString().isEmpty();
         boolean isNoRating=ratingField.getRating()==0;
         boolean isNullPhotoURL=coverPhotoURL==null;
 
         if(isTitleEmpty){
-            titleField.setError(TITLE_EMPTY_MESSAGE);
+            titleField.setError(Config.TITLE_EMPTY_MESSAGE);
         }
 
         if(isAuthorEmpty){
-            authorField.setError(AUTHOR_EMPTY_MESSAGE);
+            authorField.setError(Config.AUTHOR_EMPTY_MESSAGE);
         }
 
         if(isNoRating){
-            Toast.makeText(this, RATING_ZERO_MESSAGE, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Config.RATING_ZERO_MESSAGE, Toast.LENGTH_SHORT).show();
         }
 
         if(isNullPhotoURL){
-            Toast.makeText(this, IMAGE_URL_NULL_MESSAGE, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Config.IMAGE_URL_NULL_MESSAGE, Toast.LENGTH_SHORT).show();
         }
 
         if(!isTitleEmpty && !isAuthorEmpty && !isNoRating && !isNullPhotoURL){
             bookDatabaseHelper=new BookDatabaseHelper(getApplicationContext());
             if(bookDatabaseHelper.add(getApplicationContext(),getTitle,getAuthor,getRating,coverPhotoURL)){
-                Config.showToast(BOOK_ADD_SUCCESS_MSG,getApplicationContext());
+                Config.showToast(Config.BOOK_ADD_SUCCESS_MSG,getApplicationContext());
             }
             startActivity(new Intent(getApplicationContext(),MainActivity.class));
         }
