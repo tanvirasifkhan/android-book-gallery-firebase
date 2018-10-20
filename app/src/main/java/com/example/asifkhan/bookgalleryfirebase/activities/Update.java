@@ -2,6 +2,8 @@ package com.example.asifkhan.bookgalleryfirebase.activities;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -53,6 +55,25 @@ public class Update extends AppCompatActivity implements View.OnClickListener {
             case R.id.edit_book:
                 update();
                 break;
+            case R.id.book_cover:
+                captureCoverPhoto();
+                break;
+        }
+    }
+
+    // capture book cover photo
+    private void captureCoverPhoto() {
+        Intent intent=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent,Config.COVER_PHOTO_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==Config.COVER_PHOTO_REQUEST_CODE && resultCode==RESULT_OK && data!=null){
+            coverPhotoURL=data.getData();
+            coverPhotoField.setImageURI(coverPhotoURL);
         }
     }
 
