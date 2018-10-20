@@ -32,6 +32,7 @@ public class BookDatabaseHelper {
     private final static String DATABASE_REFERENCE="books";
     private final static String STORAGE_PATH="cover_photo/";
     private final static String BOOK_ADDING_MESSAGE="Adding book ....";
+    private final static String BOOK_UPDATING_MESSAGE="Updating book ....";
 
     public BookDatabaseHelper(Context context){
         this.context=context;
@@ -106,5 +107,42 @@ public class BookDatabaseHelper {
 
             }
         });
+    }
+
+    // edit book according to the id
+    public boolean edit(final Context context,final String id,final String title, final String author, final String rating, final Uri coverPhotoURL){
+        databaseReference=FirebaseDatabase.getInstance().getReference(DATABASE_REFERENCE);
+        Config.showToast(BOOK_UPDATING_MESSAGE,context);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                storageReference=FirebaseStorage.getInstance().getReference().child(id).child(STORAGE_PATH+coverPhotoURL.getLastPathSegment());
+                StorageTask storageTask=storageReference.putFile(coverPhotoURL);
+                Task<Uri> uriTask=storageTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot,Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> taskSnapshot) throws Exception {
+                        if(!taskSnapshot.isSuccessful()){
+                            throw taskSnapshot.getException();
+                        }
+                        return storageReference.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful()){
+                            Uri downloadURi=task.getResult();
+                            Book book=new Book(id,title,author,rating,downloadURi.toString());
+                            databaseReference.setValue(book);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return true;
     }
 }
