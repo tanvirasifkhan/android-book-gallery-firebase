@@ -23,6 +23,11 @@ public class Config {
     public final static String IMAGE_URL_NULL_MESSAGE="Choose an image !";
     public final static String BOOK_ADD_SUCCESS_MSG="Book added successfully !";
     public final static String BOOK_UPDATE_SUCCESS_MSG="Book updated successfully !";
+    public final static String BOOK_REMOVE_SUCCESS_MSG="Book removed successfully !";
+    public final static String BOOK_REMOVE_DIALOG_TITLE="Book Remove Dialog !";
+    public final static String BOOK_REMOVE_DIALOG_MSG="Are you sure ?";
+    public final static String BOOK_REMOVE_TEXT="Remove";
+    public final static String BOOK_REMOVE_CANCEL_TEXT="Cancel";
     public static final int COVER_PHOTO_REQUEST_CODE=1000;
 
 
