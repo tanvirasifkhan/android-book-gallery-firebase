@@ -1,12 +1,14 @@
 package com.example.asifkhan.bookgalleryfirebase.helpers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.GridView;
 import android.widget.Toast;
 
 
+import com.example.asifkhan.bookgalleryfirebase.activities.MainActivity;
 import com.example.asifkhan.bookgalleryfirebase.adapters.BookGalleryAdapter;
 import com.example.asifkhan.bookgalleryfirebase.models.Book;
 import com.google.android.gms.tasks.Continuation;
@@ -30,13 +32,16 @@ public class BookDatabaseHelper {
     private StorageReference storageReference;
     private final static String DATABASE_REFERENCE="books";
     private final static String STORAGE_PATH="cover_photo/";
+    private final static String BOOK_ADDING_MESSAGE="Adding book ....";
 
     public BookDatabaseHelper(Context context){
         this.context=context;
     }
 
     // add new book into the firebase database
-    public boolean add(final String title, final String author, final String rating, final Uri coverPhotoURL){
+    public boolean add(final Context context,final String title, final String author, final String rating, final Uri coverPhotoURL){
+        databaseReference=FirebaseDatabase.getInstance().getReference(DATABASE_REFERENCE);
+        Config.showToast(BOOK_ADDING_MESSAGE,context);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
@@ -57,7 +62,6 @@ public class BookDatabaseHelper {
                         if(task.isSuccessful()){
                             Uri downloadURi=task.getResult();
                             Book book=new Book(title,author,rating,downloadURi.toString());
-                            databaseReference=FirebaseDatabase.getInstance().getReference(DATABASE_REFERENCE);
                             databaseReference.child(uniqueKey).setValue(book);
                         }
                     }
@@ -79,6 +83,7 @@ public class BookDatabaseHelper {
 
     // get all the books from the database
     public void all(final ArrayList<Book> books, final Context context, final GridView bookGallery){
+        databaseReference=FirebaseDatabase.getInstance().getReference(DATABASE_REFERENCE);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
