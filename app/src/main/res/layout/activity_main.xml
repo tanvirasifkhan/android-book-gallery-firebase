@@ -6,8 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
+    <include android:id="@+id/toolbar" layout="@layout/custom_toolbar_layout"/>
+
     <GridView
         android:id="@+id/book_gallery"
+        android:layout_below="@+id/toolbar"
         android:verticalSpacing="1dp"
         android:horizontalSpacing="1dp"
         android:stretchMode="columnWidth"
