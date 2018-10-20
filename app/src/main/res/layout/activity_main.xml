@@ -8,6 +8,16 @@
 
     <include android:id="@+id/toolbar" layout="@layout/custom_toolbar_layout"/>
 
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/loader"
+        app:indicatorColor="@color/colorAccent"
+        style="@style/AVLoadingIndicatorView.Large"
+        app:indicatorName="BallClipRotateMultipleIndicator"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <GridView
         android:id="@+id/book_gallery"
         android:layout_below="@+id/toolbar"
