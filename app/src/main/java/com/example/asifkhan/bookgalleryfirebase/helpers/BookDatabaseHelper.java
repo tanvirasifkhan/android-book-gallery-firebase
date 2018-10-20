@@ -69,4 +69,9 @@ public class BookDatabaseHelper {
         });
         return true;
     }
+
+    // check if there is any book in the database
+    public boolean anyBookExists(DataSnapshot dataSnapshot){
+        return (dataSnapshot.getChildrenCount()>0)?true:false;
+    }
 }
