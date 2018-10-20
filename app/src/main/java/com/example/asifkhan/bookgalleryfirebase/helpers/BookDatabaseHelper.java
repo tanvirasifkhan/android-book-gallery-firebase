@@ -30,14 +30,13 @@ public class BookDatabaseHelper {
     private StorageReference storageReference;
     private final static String DATABASE_REFERENCE="books";
     private final static String STORAGE_PATH="cover_photo/";
-    private final static String BOOK_ADD_SUCCESS_MSG="Book added successfully !";
 
     public BookDatabaseHelper(Context context){
         this.context=context;
     }
 
     // add new book into the firebase database
-    public boolean add(final Context context, final String title, final String author, final String rating, final Uri coverPhotoURL){
+    public boolean add(final String title, final String author, final String rating, final Uri coverPhotoURL){
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
@@ -60,7 +59,6 @@ public class BookDatabaseHelper {
                             Book book=new Book(title,author,rating,downloadURi.toString());
                             databaseReference=FirebaseDatabase.getInstance().getReference(DATABASE_REFERENCE);
                             databaseReference.child(uniqueKey).setValue(book);
-                            Config.showToast(BOOK_ADD_SUCCESS_MSG,context);
                         }
                     }
                 });
