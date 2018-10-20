@@ -1,6 +1,8 @@
 package com.example.asifkhan.bookgalleryfirebase.helpers;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
@@ -18,5 +20,12 @@ public class Config {
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(view);
         toast.show();
+    }
+
+    //check internet availability
+    public static boolean isNetworkAvailable(Context context){
+        ConnectivityManager connectivityManager=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo=connectivityManager.getActiveNetworkInfo();
+        return (networkInfo!=null && networkInfo.isConnected())?true:false;
     }
 }
