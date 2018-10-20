@@ -97,10 +97,7 @@ public class AddBook extends AppCompatActivity implements View.OnClickListener {
 
         if(!isTitleEmpty && !isAuthorEmpty && !isNoRating && !isNullPhotoURL){
             bookDatabaseHelper=new BookDatabaseHelper(getApplicationContext());
-            if(bookDatabaseHelper.add(getApplicationContext(),getTitle,getAuthor,getRating,coverPhotoURL)){
-                Config.showToast(Config.BOOK_ADD_SUCCESS_MSG,getApplicationContext());
-            }
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            bookDatabaseHelper.add(getApplicationContext(),getTitle,getAuthor,getRating,coverPhotoURL);
         }
     }
 }
