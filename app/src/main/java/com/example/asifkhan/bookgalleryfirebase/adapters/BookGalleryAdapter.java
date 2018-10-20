@@ -1,6 +1,7 @@
 package com.example.asifkhan.bookgalleryfirebase.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,11 +15,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.asifkhan.bookgalleryfirebase.R;
+import com.example.asifkhan.bookgalleryfirebase.activities.Update;
+import com.example.asifkhan.bookgalleryfirebase.helpers.Config;
 import com.example.asifkhan.bookgalleryfirebase.models.Book;
 
 import java.util.ArrayList;
 
-public class BookGalleryAdapter extends BaseAdapter implements View.OnClickListener{
+public class BookGalleryAdapter extends BaseAdapter {
     private ArrayList<Book> books;
     private Context context;
 
@@ -55,20 +58,14 @@ public class BookGalleryAdapter extends BaseAdapter implements View.OnClickListe
         TextView title=(TextView)convertView.findViewById(R.id.title);
         TextView author=(TextView)convertView.findViewById(R.id.author);
         RatingBar rating=(RatingBar)convertView.findViewById(R.id.rating);
-        Book book=books.get(position);
+        final Book book=books.get(position);
         title.setText(book.getTitle());
         author.setText(book.getAuthor());
-        rating.setRating(Float.parseFloat(book.getRating()));
-        option.setOnClickListener(this);
+        rating.setRating(book.getRating());
         Glide.with(context).load(book.getCoverPhotoURL()).crossFade(1000).diskCacheStrategy(DiskCacheStrategy.ALL).into(coverPhoto);
-        return convertView;
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.option:
-                Book book=new Book();
+        option.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 PopupMenu popupMenu=new PopupMenu(context,v);
                 popupMenu.getMenuInflater().inflate(R.menu.option_popup_menu,popupMenu.getMenu());
                 popupMenu.show();
@@ -77,6 +74,13 @@ public class BookGalleryAdapter extends BaseAdapter implements View.OnClickListe
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()){
                             case R.id.edit:
+                                Intent intent=new Intent(context,Update.class);
+                                intent.putExtra(Config.BOOK_ID,book.getId());
+                                intent.putExtra(Config.BOOK_TITLE,book.getTitle());
+                                intent.putExtra(Config.BOOK_AUTHOR,book.getAuthor());
+                                intent.putExtra(Config.BOOK_RATING,book.getRating());
+                                intent.putExtra(Config.BOOK_COVER_PHOTO_URL,book.getCoverPhotoURL());
+                                context.startActivity(intent);
                                 return true;
                             case R.id.delete:
                                 return true;
@@ -85,6 +89,8 @@ public class BookGalleryAdapter extends BaseAdapter implements View.OnClickListe
                         }
                     }
                 });
-        }
+            }
+        });
+        return convertView;
     }
 }
