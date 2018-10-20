@@ -13,14 +13,6 @@ public class Book {
         this.coverPhotoURL = coverPhotoURL;
     }
 
-    public Book(String id, String title, String author, float rating, String coverPhotoURL) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.rating = rating;
-        this.coverPhotoURL = coverPhotoURL;
-    }
-
     public String getId() {
         return id;
     }
