@@ -1,16 +1,22 @@
 package com.example.asifkhan.bookgalleryfirebase.helpers;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.Toast;
 
 
+import com.example.asifkhan.bookgalleryfirebase.activities.MainActivity;
 import com.example.asifkhan.bookgalleryfirebase.adapters.BookGalleryAdapter;
 import com.example.asifkhan.bookgalleryfirebase.models.Book;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -107,7 +113,7 @@ public class BookDatabaseHelper {
 
     // edit book according to the id
     public boolean edit(final Context context,final String id,final String title, final String author, final float rating, final Uri coverPhotoURL){
-        databaseReference=FirebaseDatabase.getInstance().getReference(Config.DATABASE_REFERENCE);
+        databaseReference=FirebaseDatabase.getInstance().getReference(Config.DATABASE_REFERENCE).child(id);
         Config.showToast(Config.BOOK_UPDATING_MESSAGE,context);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -127,7 +133,7 @@ public class BookDatabaseHelper {
                     public void onComplete(@NonNull Task<Uri> task) {
                         if(task.isSuccessful()){
                             Uri downloadURi=task.getResult();
-                            Book book=new Book(id,title,author,rating,downloadURi.toString());
+                            Book book=new Book(title,author,rating,downloadURi.toString());
                             databaseReference.setValue(book);
                         }
                     }
@@ -139,6 +145,34 @@ public class BookDatabaseHelper {
 
             }
         });
+        return true;
+    }
+
+    // remove book from the database
+    public boolean remove(final Context context, final Book book){
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        builder.setTitle(Config.BOOK_REMOVE_DIALOG_TITLE);
+        builder.setMessage(Config.BOOK_REMOVE_DIALOG_MSG);
+        builder.setPositiveButton(Config.BOOK_REMOVE_TEXT, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                databaseReference=FirebaseDatabase.getInstance().getReference(Config.DATABASE_REFERENCE).child(book.getId());
+                storageReference=FirebaseStorage.getInstance().getReferenceFromUrl(book.getCoverPhotoURL());
+                storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        databaseReference.removeValue();
+                        context.startActivity(new Intent(context,MainActivity.class));
+                        Config.showToast(Config.BOOK_REMOVE_SUCCESS_MSG,context);
+                    }
+                });
+            }
+        }).setNegativeButton(Config.BOOK_REMOVE_CANCEL_TEXT, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).create().show();
         return true;
     }
 }
