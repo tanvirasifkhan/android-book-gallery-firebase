@@ -18,6 +18,16 @@
         android:text="No Books Available"
         android:textSize="16sp" />
 
+    <TextView
+        android:id="@+id/check_connectivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="No Internet Available"
+        android:textSize="16sp" />
+
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/loader"
         android:visibility="gone"
