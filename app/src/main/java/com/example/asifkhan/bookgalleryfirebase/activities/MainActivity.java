@@ -13,6 +13,7 @@ import com.example.asifkhan.bookgalleryfirebase.R;
 import com.example.asifkhan.bookgalleryfirebase.adapters.BookGalleryAdapter;
 import com.example.asifkhan.bookgalleryfirebase.helpers.BookDatabaseHelper;
 import com.example.asifkhan.bookgalleryfirebase.models.Book;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
 
@@ -22,19 +23,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<Book> books;
     private FloatingActionButton addBook;
     private BookDatabaseHelper bookDatabaseHelper;
+    private AVLoadingIndicatorView loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
+        loader=(AVLoadingIndicatorView)findViewById(R.id.loader);
         gallery=(GridView)findViewById(R.id.book_gallery);
         books=new ArrayList<>();
         bookDatabaseHelper=new BookDatabaseHelper(this);
         bookGalleryAdapter=new BookGalleryAdapter(books,this);
         addBook=(FloatingActionButton)findViewById(R.id.add_book);
         gallery.setAdapter(bookGalleryAdapter);
-        bookDatabaseHelper.all(books,this,gallery);
+        bookDatabaseHelper.all(loader,books,this,gallery);
         addBook.setOnClickListener(this);
     }
 
