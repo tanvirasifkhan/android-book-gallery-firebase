@@ -2,10 +2,12 @@ package com.example.asifkhan.bookgalleryfirebase.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -16,7 +18,7 @@ import com.example.asifkhan.bookgalleryfirebase.models.Book;
 
 import java.util.ArrayList;
 
-public class BookGalleryAdapter extends BaseAdapter {
+public class BookGalleryAdapter extends BaseAdapter implements View.OnClickListener{
     private ArrayList<Book> books;
     private Context context;
 
@@ -57,7 +59,32 @@ public class BookGalleryAdapter extends BaseAdapter {
         title.setText(book.getTitle());
         author.setText(book.getAuthor());
         rating.setRating(Float.parseFloat(book.getRating()));
+        option.setOnClickListener(this);
         Glide.with(context).load(book.getCoverPhotoURL()).crossFade(1000).diskCacheStrategy(DiskCacheStrategy.ALL).into(coverPhoto);
         return convertView;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.option:
+                Book book=new Book();
+                PopupMenu popupMenu=new PopupMenu(context,v);
+                popupMenu.getMenuInflater().inflate(R.menu.option_popup_menu,popupMenu.getMenu());
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.edit:
+                                return true;
+                            case R.id.delete:
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+        }
     }
 }
