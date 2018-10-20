@@ -60,7 +60,7 @@ public class BookDatabaseHelper {
                             Book book=new Book(title,author,rating,downloadURi.toString());
                             databaseReference=FirebaseDatabase.getInstance().getReference(DATABASE_REFERENCE);
                             databaseReference.child(uniqueKey).setValue(book);
-                            Toast.makeText(context, BOOK_ADD_SUCCESS_MSG , Toast.LENGTH_SHORT).show();
+                            Config.showToast(BOOK_ADD_SUCCESS_MSG,context);
                         }
                     }
                 });
