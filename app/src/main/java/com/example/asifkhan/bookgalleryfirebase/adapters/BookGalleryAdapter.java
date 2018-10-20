@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.asifkhan.bookgalleryfirebase.R;
 import com.example.asifkhan.bookgalleryfirebase.activities.Update;
+import com.example.asifkhan.bookgalleryfirebase.helpers.BookDatabaseHelper;
 import com.example.asifkhan.bookgalleryfirebase.helpers.Config;
 import com.example.asifkhan.bookgalleryfirebase.models.Book;
 
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 public class BookGalleryAdapter extends BaseAdapter {
     private ArrayList<Book> books;
     private Context context;
+    private BookDatabaseHelper bookDatabaseHelper;
 
     public BookGalleryAdapter(ArrayList<Book> books, Context context) {
         this.books = books;
@@ -62,6 +64,7 @@ public class BookGalleryAdapter extends BaseAdapter {
         title.setText(book.getTitle());
         author.setText(book.getAuthor());
         rating.setRating(book.getRating());
+        bookDatabaseHelper=new BookDatabaseHelper(context);
         Glide.with(context).load(book.getCoverPhotoURL()).crossFade(1000).diskCacheStrategy(DiskCacheStrategy.ALL).into(coverPhoto);
         option.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +86,8 @@ public class BookGalleryAdapter extends BaseAdapter {
                                 context.startActivity(intent);
                                 return true;
                             case R.id.delete:
-                                return true;
+                                bookDatabaseHelper.remove(context,book);
+;                                return true;
                             default:
                                 return false;
                         }
