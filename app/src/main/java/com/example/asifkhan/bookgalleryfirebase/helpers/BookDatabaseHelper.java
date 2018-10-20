@@ -88,35 +88,44 @@ public class BookDatabaseHelper {
     }
 
     // get all the books from the database
-    public void all(final TextView check, final AVLoadingIndicatorView loader, final ArrayList<Book> books, final Context context, final GridView bookGallery){
+    public void all(final TextView checkInternet, final TextView check, final AVLoadingIndicatorView loader, final ArrayList<Book> books, final Context context, final GridView bookGallery){
         databaseReference=FirebaseDatabase.getInstance().getReference(Config.DATABASE_REFERENCE);
         loader.setVisibility(View.VISIBLE);
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(anyBookExists(dataSnapshot)){
-                    books.clear();
-                    for(DataSnapshot snapshot:dataSnapshot.getChildren()){
-                        Book book=snapshot.getValue(Book.class);
-                        book.setId(snapshot.getKey());
-                        books.add(book);
+        if(Config.isNetworkAvailable(context)){
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(anyBookExists(dataSnapshot)){
+                        books.clear();
+                        for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                            Book book=snapshot.getValue(Book.class);
+                            book.setId(snapshot.getKey());
+                            books.add(book);
+                        }
+                        BookGalleryAdapter bookGalleryAdapter=new BookGalleryAdapter(books,context);
+                        bookGallery.setAdapter(bookGalleryAdapter);
+                        loader.setVisibility(View.GONE);
+                        check.setVisibility(View.GONE);
+                    }else{
+                        bookGallery.setVisibility(View.GONE);
+                        check.setVisibility(View.VISIBLE);
+                        loader.setVisibility(View.GONE);
                     }
-                    BookGalleryAdapter bookGalleryAdapter=new BookGalleryAdapter(books,context);
-                    bookGallery.setAdapter(bookGalleryAdapter);
-                    loader.setVisibility(View.GONE);
-                    check.setVisibility(View.GONE);
-                }else{
-                    bookGallery.setVisibility(View.GONE);
-                    check.setVisibility(View.VISIBLE);
-                    loader.setVisibility(View.GONE);
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+
+            });
+            checkInternet.setVisibility(View.GONE);
+        }else {
+            checkInternet.setVisibility(View.VISIBLE);
+            loader.setVisibility(View.GONE);
+            bookGallery.setVisibility(View.GONE);
+            check.setVisibility(View.GONE);
+        }
     }
 
     // edit book according to the id
