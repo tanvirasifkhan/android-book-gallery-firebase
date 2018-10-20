@@ -3,9 +3,11 @@ package com.example.asifkhan.bookgalleryfirebase.helpers;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.widget.GridView;
 import android.widget.Toast;
 
 
+import com.example.asifkhan.bookgalleryfirebase.adapters.BookGalleryAdapter;
 import com.example.asifkhan.bookgalleryfirebase.models.Book;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,6 +21,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.ArrayList;
 
 public class BookDatabaseHelper {
     private Context context;
@@ -73,5 +77,27 @@ public class BookDatabaseHelper {
     // check if there is any book in the database
     public boolean anyBookExists(DataSnapshot dataSnapshot){
         return (dataSnapshot.getChildrenCount()>0)?true:false;
+    }
+
+    // get all the books from the database
+    public void all(final ArrayList<Book> books, final Context context, final GridView bookGallery){
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                books.clear();
+                for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                    Book book=snapshot.getValue(Book.class);
+                    book.setId(snapshot.getKey());
+                    books.add(book);
+                }
+                BookGalleryAdapter bookGalleryAdapter=new BookGalleryAdapter(books,context);
+                bookGallery.setAdapter(bookGalleryAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
