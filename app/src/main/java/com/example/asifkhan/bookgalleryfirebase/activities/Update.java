@@ -1,5 +1,6 @@
 package com.example.asifkhan.bookgalleryfirebase.activities;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,9 +10,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.asifkhan.bookgalleryfirebase.R;
 import com.example.asifkhan.bookgalleryfirebase.helpers.BookDatabaseHelper;
+import com.example.asifkhan.bookgalleryfirebase.helpers.Config;
 
 public class Update extends AppCompatActivity implements View.OnClickListener {
     private EditText titleField,authorField;
@@ -21,26 +26,23 @@ public class Update extends AppCompatActivity implements View.OnClickListener {
     private Uri coverPhotoURL;
     private BookDatabaseHelper bookDatabaseHelper;
 
-    private final static String TITLE_EMPTY_MESSAGE="Title is required !";
-    private final static String AUTHOR_EMPTY_MESSAGE="Author is required !";
-    private final static String RATING_ZERO_MESSAGE="Give some rating !";
-    private final static String IMAGE_URL_NULL_MESSAGE="Choose an image !";
-    private final static String BOOK_ADD_SUCCESS_MSG="Book added successfully !";
-
-
-    private static final int COVER_PHOTO_REQUEST_CODE=1000;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
-        setSupportActionBar((Toolbar)findViewById(R.id.loader));
+        setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        bookDatabaseHelper=new BookDatabaseHelper(this);
         titleField=(EditText)findViewById(R.id.book_title_field);
         authorField=(EditText)findViewById(R.id.book_author_field);
         ratingField=(RatingBar)findViewById(R.id.rating);
         coverPhotoField=(ImageView)findViewById(R.id.book_cover);
         editBook=(Button)findViewById(R.id.edit_book);
+        titleField.setText(getIntent().getExtras().getString(Config.BOOK_TITLE));
+        authorField.setText(getIntent().getExtras().getString(Config.BOOK_AUTHOR));
+        ratingField.setRating(getIntent().getExtras().getFloat(Config.BOOK_RATING));
+        Glide.with(this).load(getIntent().getExtras().getString(Config.BOOK_COVER_PHOTO_URL)).
+                crossFade(1000).diskCacheStrategy(DiskCacheStrategy.ALL).into(coverPhotoField);
         editBook.setOnClickListener(this);
         coverPhotoField.setOnClickListener(this);
     }
@@ -49,7 +51,43 @@ public class Update extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.edit_book:
+                update();
                 break;
+        }
+    }
+
+    // update book according to id
+    private void update() {
+        String getTitle=titleField.getText().toString();
+        String getAuthor=authorField.getText().toString();
+        float getRating=ratingField.getRating();
+        boolean isTitleEmpty=titleField.getText().toString().isEmpty();
+        boolean isAuthorEmpty=authorField.getText().toString().isEmpty();
+        boolean isNoRating=ratingField.getRating()==0;
+        boolean isNullPhotoURL=coverPhotoURL==null;
+        String book_id=getIntent().getExtras().getString(Config.BOOK_ID);
+
+        if(isTitleEmpty){
+            titleField.setError(Config.TITLE_EMPTY_MESSAGE);
+        }
+
+        if(isAuthorEmpty){
+            authorField.setError(Config.AUTHOR_EMPTY_MESSAGE);
+        }
+
+        if(isNoRating){
+            Toast.makeText(this, Config.RATING_ZERO_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
+
+        if(isNullPhotoURL){
+            Toast.makeText(this, Config.IMAGE_URL_NULL_MESSAGE, Toast.LENGTH_SHORT).show();
+        }
+
+        if(!isTitleEmpty && !isAuthorEmpty && !isNoRating && !isNullPhotoURL){
+            if(bookDatabaseHelper.edit(getApplicationContext(),book_id,getTitle,getAuthor,getRating,coverPhotoURL)){
+                Config.showToast(Config.BOOK_UPDATE_SUCCESS_MSG,getApplicationContext());
+            }
+            startActivity(new Intent(getApplicationContext(),MainActivity.class));
         }
     }
 }
