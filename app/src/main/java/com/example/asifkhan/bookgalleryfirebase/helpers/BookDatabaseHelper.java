@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -41,7 +42,7 @@ public class BookDatabaseHelper {
     }
 
     // add new book into the firebase database
-    public boolean add(final Context context,final String title, final String author, final float rating, final Uri coverPhotoURL){
+    public void add(final Context context,final String title, final String author, final float rating, final Uri coverPhotoURL){
         databaseReference=FirebaseDatabase.getInstance().getReference(Config.DATABASE_REFERENCE);
         Config.showToast(Config.BOOK_ADDING_MESSAGE,context);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -65,7 +66,11 @@ public class BookDatabaseHelper {
                             Uri downloadURi=task.getResult();
                             Book book=new Book(title,author,rating,downloadURi.toString());
                             databaseReference.child(uniqueKey).setValue(book);
+                            Config.showToast(Config.BOOK_ADD_SUCCESS_MSG,context);
                         }
+                        Intent intent=new Intent(context,MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
                     }
                 });
             }
@@ -75,7 +80,6 @@ public class BookDatabaseHelper {
 
             }
         });
-        return true;
     }
 
     // check if there is any book in the database
@@ -84,8 +88,9 @@ public class BookDatabaseHelper {
     }
 
     // get all the books from the database
-    public void all(final AVLoadingIndicatorView loader, final ArrayList<Book> books, final Context context, final GridView bookGallery){
+    public void all(final TextView check, final AVLoadingIndicatorView loader, final ArrayList<Book> books, final Context context, final GridView bookGallery){
         databaseReference=FirebaseDatabase.getInstance().getReference(Config.DATABASE_REFERENCE);
+        loader.setVisibility(View.VISIBLE);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -99,8 +104,11 @@ public class BookDatabaseHelper {
                     BookGalleryAdapter bookGalleryAdapter=new BookGalleryAdapter(books,context);
                     bookGallery.setAdapter(bookGalleryAdapter);
                     loader.setVisibility(View.GONE);
+                    check.setVisibility(View.GONE);
                 }else{
                     bookGallery.setVisibility(View.GONE);
+                    check.setVisibility(View.VISIBLE);
+                    loader.setVisibility(View.GONE);
                 }
             }
 
@@ -112,7 +120,7 @@ public class BookDatabaseHelper {
     }
 
     // edit book according to the id
-    public boolean edit(final Context context,final String id,final String title, final String author, final float rating, final Uri coverPhotoURL){
+    public void edit(final Context context,final String id,final String title, final String author, final float rating, final Uri coverPhotoURL){
         databaseReference=FirebaseDatabase.getInstance().getReference(Config.DATABASE_REFERENCE).child(id);
         Config.showToast(Config.BOOK_UPDATING_MESSAGE,context);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -135,7 +143,11 @@ public class BookDatabaseHelper {
                             Uri downloadURi=task.getResult();
                             Book book=new Book(title,author,rating,downloadURi.toString());
                             databaseReference.setValue(book);
+                            Config.showToast(Config.BOOK_UPDATE_SUCCESS_MSG,context);
                         }
+                        Intent intent=new Intent(context,MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
                     }
                 });
             }
@@ -145,7 +157,6 @@ public class BookDatabaseHelper {
 
             }
         });
-        return true;
     }
 
     // remove book from the database
@@ -162,7 +173,6 @@ public class BookDatabaseHelper {
                     @Override
                     public void onSuccess(Void aVoid) {
                         databaseReference.removeValue();
-                        context.startActivity(new Intent(context,MainActivity.class));
                         Config.showToast(Config.BOOK_REMOVE_SUCCESS_MSG,context);
                     }
                 });
