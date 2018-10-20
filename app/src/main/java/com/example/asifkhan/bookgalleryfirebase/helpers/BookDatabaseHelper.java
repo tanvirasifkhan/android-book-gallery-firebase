@@ -1,14 +1,12 @@
 package com.example.asifkhan.bookgalleryfirebase.helpers;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.GridView;
-import android.widget.Toast;
 
 
-import com.example.asifkhan.bookgalleryfirebase.activities.MainActivity;
 import com.example.asifkhan.bookgalleryfirebase.adapters.BookGalleryAdapter;
 import com.example.asifkhan.bookgalleryfirebase.models.Book;
 import com.google.android.gms.tasks.Continuation;
@@ -23,6 +21,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
 
@@ -82,19 +81,24 @@ public class BookDatabaseHelper {
     }
 
     // get all the books from the database
-    public void all(final ArrayList<Book> books, final Context context, final GridView bookGallery){
+    public void all(final AVLoadingIndicatorView loader, final ArrayList<Book> books, final Context context, final GridView bookGallery){
         databaseReference=FirebaseDatabase.getInstance().getReference(DATABASE_REFERENCE);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                books.clear();
-                for(DataSnapshot snapshot:dataSnapshot.getChildren()){
-                    Book book=snapshot.getValue(Book.class);
-                    book.setId(snapshot.getKey());
-                    books.add(book);
+                if(anyBookExists(dataSnapshot)){
+                    books.clear();
+                    for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                        Book book=snapshot.getValue(Book.class);
+                        book.setId(snapshot.getKey());
+                        books.add(book);
+                    }
+                    BookGalleryAdapter bookGalleryAdapter=new BookGalleryAdapter(books,context);
+                    bookGallery.setAdapter(bookGalleryAdapter);
+                    loader.setVisibility(View.GONE);
+                }else{
+                    bookGallery.setVisibility(View.GONE);
                 }
-                BookGalleryAdapter bookGalleryAdapter=new BookGalleryAdapter(books,context);
-                bookGallery.setAdapter(bookGalleryAdapter);
             }
 
             @Override
