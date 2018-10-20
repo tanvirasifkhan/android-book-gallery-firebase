@@ -16,6 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.AddBook" android:screenOrientation="portrait" android:parentActivityName=".activities.MainActivity" android:label="Add Book"></activity>
     </application>
 
 </manifest>
