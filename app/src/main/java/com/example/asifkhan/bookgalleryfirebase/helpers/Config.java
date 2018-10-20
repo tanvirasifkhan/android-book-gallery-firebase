@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.asifkhan.bookgalleryfirebase.R;
@@ -16,9 +18,9 @@ public class Config {
         LayoutInflater layoutInflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view=layoutInflater.inflate(R.layout.custom_toast_layout,null);
         Toast toast=new Toast(context);
-        toast.setText(message);
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(view);
+        ((TextView)view.findViewById(R.id.message)).setText(message);
         toast.show();
     }
 
