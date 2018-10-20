@@ -3,10 +3,9 @@ package com.example.asifkhan.bookgalleryfirebase.helpers;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.asifkhan.bookgalleryfirebase.activities.MainActivity;
+
 import com.example.asifkhan.bookgalleryfirebase.models.Book;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,7 +34,6 @@ public class BookDatabaseHelper {
 
     // add new book into the firebase database
     public boolean add(final Context context, final String title, final String author, final String rating, final Uri coverPhotoURL){
-        this.context=context;
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
