@@ -105,10 +105,7 @@ public class Update extends AppCompatActivity implements View.OnClickListener {
         }
 
         if(!isTitleEmpty && !isAuthorEmpty && !isNoRating && !isNullPhotoURL){
-            if(bookDatabaseHelper.edit(getApplicationContext(),book_id,getTitle,getAuthor,getRating,coverPhotoURL)){
-                Config.showToast(Config.BOOK_UPDATE_SUCCESS_MSG,getApplicationContext());
-            }
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            bookDatabaseHelper.edit(getApplicationContext(),book_id,getTitle,getAuthor,getRating,coverPhotoURL);
         }
     }
 }
