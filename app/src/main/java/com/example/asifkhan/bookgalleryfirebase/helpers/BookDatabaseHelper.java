@@ -29,24 +29,20 @@ public class BookDatabaseHelper {
     private Context context;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
-    private final static String DATABASE_REFERENCE="books";
-    private final static String STORAGE_PATH="cover_photo/";
-    private final static String BOOK_ADDING_MESSAGE="Adding book ....";
-    private final static String BOOK_UPDATING_MESSAGE="Updating book ....";
 
     public BookDatabaseHelper(Context context){
         this.context=context;
     }
 
     // add new book into the firebase database
-    public boolean add(final Context context,final String title, final String author, final String rating, final Uri coverPhotoURL){
-        databaseReference=FirebaseDatabase.getInstance().getReference(DATABASE_REFERENCE);
-        Config.showToast(BOOK_ADDING_MESSAGE,context);
+    public boolean add(final Context context,final String title, final String author, final float rating, final Uri coverPhotoURL){
+        databaseReference=FirebaseDatabase.getInstance().getReference(Config.DATABASE_REFERENCE);
+        Config.showToast(Config.BOOK_ADDING_MESSAGE,context);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                 final String uniqueKey=databaseReference.push().getKey();
-                storageReference=FirebaseStorage.getInstance().getReference().child(uniqueKey).child(STORAGE_PATH+coverPhotoURL.getLastPathSegment());
+                storageReference=FirebaseStorage.getInstance().getReference().child(uniqueKey).child(Config.STORAGE_PATH+coverPhotoURL.getLastPathSegment());
                 StorageTask storageTask=storageReference.putFile(coverPhotoURL);
                 Task<Uri> uriTask=storageTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot,Task<Uri>>() {
                     @Override
@@ -83,7 +79,7 @@ public class BookDatabaseHelper {
 
     // get all the books from the database
     public void all(final AVLoadingIndicatorView loader, final ArrayList<Book> books, final Context context, final GridView bookGallery){
-        databaseReference=FirebaseDatabase.getInstance().getReference(DATABASE_REFERENCE);
+        databaseReference=FirebaseDatabase.getInstance().getReference(Config.DATABASE_REFERENCE);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -110,13 +106,13 @@ public class BookDatabaseHelper {
     }
 
     // edit book according to the id
-    public boolean edit(final Context context,final String id,final String title, final String author, final String rating, final Uri coverPhotoURL){
-        databaseReference=FirebaseDatabase.getInstance().getReference(DATABASE_REFERENCE);
-        Config.showToast(BOOK_UPDATING_MESSAGE,context);
+    public boolean edit(final Context context,final String id,final String title, final String author, final float rating, final Uri coverPhotoURL){
+        databaseReference=FirebaseDatabase.getInstance().getReference(Config.DATABASE_REFERENCE);
+        Config.showToast(Config.BOOK_UPDATING_MESSAGE,context);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
-                storageReference=FirebaseStorage.getInstance().getReference().child(id).child(STORAGE_PATH+coverPhotoURL.getLastPathSegment());
+                storageReference=FirebaseStorage.getInstance().getReference().child(id).child(Config.STORAGE_PATH+coverPhotoURL.getLastPathSegment());
                 StorageTask storageTask=storageReference.putFile(coverPhotoURL);
                 Task<Uri> uriTask=storageTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot,Task<Uri>>() {
                     @Override
