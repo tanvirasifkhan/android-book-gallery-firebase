@@ -31,9 +31,7 @@ public class AddBook extends AppCompatActivity implements View.OnClickListener {
     private final static String AUTHOR_EMPTY_MESSAGE="Author is required !";
     private final static String RATING_ZERO_MESSAGE="Give some rating !";
     private final static String IMAGE_URL_NULL_MESSAGE="Choose an image !";
-    private final static String BOOK_ADDING_MESSAGE="Adding book ....";
     private final static String BOOK_ADD_SUCCESS_MSG="Book added successfully !";
-    private static final String BOOK_ADD_ERROR_MSG = "Error adding book !";
 
 
     private static final int COVER_PHOTO_REQUEST_CODE=1000;
@@ -77,6 +75,7 @@ public class AddBook extends AppCompatActivity implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==COVER_PHOTO_REQUEST_CODE && resultCode==RESULT_OK && data!=null){
             coverPhotoURL=data.getData();
+            coverPhotoField.setImageURI(coverPhotoURL);
         }
     }
 
@@ -107,14 +106,11 @@ public class AddBook extends AppCompatActivity implements View.OnClickListener {
         }
 
         if(!isTitleEmpty && !isAuthorEmpty && !isNoRating && !isNullPhotoURL){
-            bookDatabaseHelper=new BookDatabaseHelper(AddBook.this);
-            Config.showToast(BOOK_ADDING_MESSAGE,AddBook.this);
-            if(bookDatabaseHelper.add(getTitle,getAuthor,getRating,coverPhotoURL)){
+            bookDatabaseHelper=new BookDatabaseHelper(getApplicationContext());
+            if(bookDatabaseHelper.add(getApplicationContext(),getTitle,getAuthor,getRating,coverPhotoURL)){
                 Config.showToast(BOOK_ADD_SUCCESS_MSG,getApplicationContext());
-                startActivity(new Intent(getApplicationContext(),MainActivity.class));
-            }else{
-                Toast.makeText(this, BOOK_ADD_ERROR_MSG, Toast.LENGTH_SHORT).show();
             }
+            startActivity(new Intent(getApplicationContext(),MainActivity.class));
         }
     }
 }
