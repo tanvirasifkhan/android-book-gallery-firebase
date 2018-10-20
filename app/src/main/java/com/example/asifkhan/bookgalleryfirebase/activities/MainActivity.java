@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FloatingActionButton addBook;
     private BookDatabaseHelper bookDatabaseHelper;
     private AVLoadingIndicatorView loader;
-    private TextView check_availibity;
+    private TextView check_availibity,checkInternet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bookGalleryAdapter=new BookGalleryAdapter(books,this);
         addBook=(FloatingActionButton)findViewById(R.id.add_book);
         check_availibity=(TextView)findViewById(R.id.book_check_availability);
+        checkInternet=(TextView)findViewById(R.id.check_connectivity);
         gallery.setAdapter(bookGalleryAdapter);
-        bookDatabaseHelper.all(check_availibity,loader,books,this,gallery);
+        bookDatabaseHelper.all(checkInternet,check_availibity,loader,books,this,gallery);
         addBook.setOnClickListener(this);
     }
 
