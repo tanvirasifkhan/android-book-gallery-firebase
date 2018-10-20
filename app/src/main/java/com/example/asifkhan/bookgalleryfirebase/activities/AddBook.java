@@ -1,6 +1,9 @@
 package com.example.asifkhan.bookgalleryfirebase.activities;
 
+import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +25,8 @@ public class AddBook extends AppCompatActivity implements View.OnClickListener {
     private Button addBook;
     private Uri coverPhotoURL;
     private BookDatabaseHelper bookDatabaseHelper;
+
+
     private final static String TITLE_EMPTY_MESSAGE="Title is required !";
     private final static String AUTHOR_EMPTY_MESSAGE="Author is required !";
     private final static String RATING_ZERO_MESSAGE="Give some rating !";
@@ -29,6 +34,9 @@ public class AddBook extends AppCompatActivity implements View.OnClickListener {
     private final static String BOOK_ADDING_MESSAGE="Adding book ....";
     private final static String BOOK_ADD_SUCCESS_MSG="Book added successfully !";
     private static final String BOOK_ADD_ERROR_MSG = "Error adding book !";
+
+
+    private static final int COVER_PHOTO_REQUEST_CODE=1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +59,24 @@ public class AddBook extends AppCompatActivity implements View.OnClickListener {
             case R.id.add:
                 newBook();
                 break;
+            case R.id.book_cover:
+                captureCoverPhoto();
+                break;
+        }
+    }
+
+    // capture book cover photo
+    private void captureCoverPhoto() {
+        Intent intent=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent,COVER_PHOTO_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==COVER_PHOTO_REQUEST_CODE && resultCode==RESULT_OK && data!=null){
+            coverPhotoURL=data.getData();
         }
     }
 
@@ -85,6 +111,7 @@ public class AddBook extends AppCompatActivity implements View.OnClickListener {
             Config.showToast(BOOK_ADDING_MESSAGE,AddBook.this);
             if(bookDatabaseHelper.add(getTitle,getAuthor,getRating,coverPhotoURL)){
                 Config.showToast(BOOK_ADD_SUCCESS_MSG,getApplicationContext());
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
             }else{
                 Toast.makeText(this, BOOK_ADD_ERROR_MSG, Toast.LENGTH_SHORT).show();
             }
