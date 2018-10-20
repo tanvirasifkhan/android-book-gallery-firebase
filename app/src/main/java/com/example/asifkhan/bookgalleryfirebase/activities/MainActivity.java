@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.example.asifkhan.bookgalleryfirebase.R;
 import com.example.asifkhan.bookgalleryfirebase.adapters.BookGalleryAdapter;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FloatingActionButton addBook;
     private BookDatabaseHelper bookDatabaseHelper;
     private AVLoadingIndicatorView loader;
+    private TextView check_availibity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +38,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bookDatabaseHelper=new BookDatabaseHelper(this);
         bookGalleryAdapter=new BookGalleryAdapter(books,this);
         addBook=(FloatingActionButton)findViewById(R.id.add_book);
+        check_availibity=(TextView)findViewById(R.id.book_check_availability);
         gallery.setAdapter(bookGalleryAdapter);
-        bookDatabaseHelper.all(loader,books,this,gallery);
+        bookDatabaseHelper.all(check_availibity,loader,books,this,gallery);
         addBook.setOnClickListener(this);
     }
 
