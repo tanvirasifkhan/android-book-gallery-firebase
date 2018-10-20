@@ -11,6 +11,7 @@ import android.widget.GridView;
 
 import com.example.asifkhan.bookgalleryfirebase.R;
 import com.example.asifkhan.bookgalleryfirebase.adapters.BookGalleryAdapter;
+import com.example.asifkhan.bookgalleryfirebase.helpers.BookDatabaseHelper;
 import com.example.asifkhan.bookgalleryfirebase.models.Book;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BookGalleryAdapter bookGalleryAdapter;
     private ArrayList<Book> books;
     private FloatingActionButton addBook;
+    private BookDatabaseHelper bookDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +30,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
         gallery=(GridView)findViewById(R.id.book_gallery);
         books=new ArrayList<>();
+        bookDatabaseHelper=new BookDatabaseHelper(this);
         bookGalleryAdapter=new BookGalleryAdapter(books,this);
         addBook=(FloatingActionButton)findViewById(R.id.add_book);
         gallery.setAdapter(bookGalleryAdapter);
+        bookDatabaseHelper.all(books,this,gallery);
         addBook.setOnClickListener(this);
     }
 
